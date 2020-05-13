@@ -1,0 +1,471 @@
+===============================
+Patch Set Update (PSU) for Bug: 30675853
+===============================
+
+Date:  Wed Dec 18 08:55:21 2019
+---------------------------------
+Platform Patch for : Generic
+Product Patched : ORACLE WEBLOGIC SERVER
+Product Version      : 12.2.1.3.0
+
+
+This document describes how to install the patch for
+bug #  30675853. It includes the following sections:
+
+	Section 1, "Zero Downtime Patching"
+
+ 	Section 2, "Prerequisites"
+
+	Section 3, "Pre-Installation Instructions"
+
+	Section 4, "Installation Instructions"
+
+	Section 5, "Post-Installation Instructions"
+
+	Section 6, "Deinstallation Instructions"
+
+	Section 7, "Post Deinstallation Instructions"
+
+	Section 8, "Bugs Fixed by This Patch"
+
+        Section 9, "Known Issues"
+
+
+ 
+1 Zero Downtime Patching
+------------------------------
+This patch has been marked as eligible for Zero Downtime Patching. 
+The type of Zero Downtime Patching supported by this patch is FMW_ROLLING_ORACLE_HOME.
+
+With Zero Downtime Patching, a Patch can be applied to a system in a manner
+that does not incur any downtime. This ensures that the system can remain
+available and functioning during the patching process. Certain
+pre-requisites, however, must be met before the patch can be applied.
+
+For more information, see the following:
+Doc ID 1942159.1 Introduction to Zero Downtime (ZDT) Patching for Oracle Fusion Middleware / WebLogic Server 
+https://support.oracle.com/rs?type=doc&id=1942159.1
+
+ 
+
+2 Prerequisites
+----------------
+Ensure that you meet the following requirements before you install or
+deinstall the patch:
+
+1. Understand the PSU program:
+
+Review the following before applying PSUs for the first time:
+
+Doc ID 1306505.1 Patch Set Update (PSU) Administration Guide for Oracle 
+WebLogic Server (WLS)
+https://support.oracle.com/rs?type=doc&id=1306505.1
+
+
+2. Update Java SE (JDK/JRE):
+
+For users of Oracle JDKs and JVMs, we strongly recommend applying the latest
+Java Critical Patch Updates (CPUs) as soon as they are released. Refer to the
+following for further information:
+
+Doc ID 1506916.1 Obtaining Java SE (JDK/JRE) for Oracle Fusion Middleware Products
+https://support.oracle.com/rs?type=doc&id=1506916.1
+
+
+3. Update OPatch:
+
+Oracle Fusion Middleware 12.2.1 products are installed with OPatch NextGen 13.3
+to apply interim patches. The OPatch utility should be updated over time to 
+resolve known issues.
+
+You can check your version using the following command:
+
+   ORACLE_HOME/OPatch/opatch version
+
+*** To install this PSU, you must use OPatch version 13.9.4.2 or later
+
+If you try to install the PSU with an earlier opatch version (e.g. 13.9.2.0.0),
+you will see an error similar to:
+
+   "
+   Verifying environment and performing prerequisite checks...
+   Prerequisite check "CheckMinimumOPatchVersion" failed.
+   The details are:
+
+   The OPatch being used has version 13.9.2.0.0 while the following patch(es)
+   require higher versions:
+   Patch 30675853 requires OPatch version 13.9.4.2.0 or later.
+   Please download latest OPatch from My Oracle Support.
+   "
+
+*** OPatch 13.9.4 is available as Patch 28186730:
+https://support.oracle.com/rs?type=patch&id=28186730
+
+Review the following for more OPatch information:
+
+Doc ID 1587524.1 Using OUI NextGen OPatch 13 for Oracle Fusion Middleware 12c (12.1.2+)
+https://support.oracle.com/rs?type=doc&id=1587524.1
+
+
+4. Verify the OUI Inventory.
+OPatch needs access to a valid OUI inventory to apply patches.
+
+Note: This needs the ORACLE_HOME to be set(refer section "2. Pre-Installation Instructions")
+prior to run the below commands:
+
+Validate the OUI inventory with the following commands:
+
+$ opatch lsinventory -jre $ORACLE_HOME/oracle_common/jdk/jre
+
+Note:
+Make sure the JDK version you use is the certified version for your product.
+
+If the command errors out, contact Oracle Support and work to validate
+and verify the inventory setup before proceeding.
+
+
+5. Create a location for storing the unzipped patch: 
+
+This location will be referred to later in the document as PATCH_TOP.
+
+NOTE: On WINDOWS, the preferred location is the drive root directory.
+For example, "C:\PATCH_TOP" and avoid choosing locations like,
+"C:\Documents and Settings\username\PATCH_TOP".
+This is necessary due to the 256 characters limitation on windows
+platform.
+
+3 Pre-Installation Instructions
+-------------------------------
+
+1. Set the ORACLE_HOME environment variable to the directory where you have installed ORACLE WEBLOGIC SERVER.
+
+2. To install this PSU, you must use OPatch version 13.9.4. See Prerequisite section above.
+
+
+
+4 Installation Instructions
+---------------------------
+
+1. Unzip the patch zip file into the PATCH_TOP.
+
+$ unzip -d PATCH_TOP p30675853_122130_Generic.zip
+
+NOTE: On WINDOWS, the unzip command has a limitation of 256 characters in the path name.
+If you encounter this, please use an alternate ZIP utility like 7-Zip to unzip the patch.
+
+For example: To unzip using 7-zip, run the command:
+"c:\Program Files\7-Zip\7z.exe" x  p30675853_122130_Generic.zip
+
+2. Set your current directory to the directory where the patch is located.
+
+$ cd PATCH_TOP/30675853
+
+3. Run OPatch to apply the patch.
+
+$ opatch apply
+
+Windows:
+When applying interim patches with OPatch 13.9.4, Microsoft Windows platform needs the '-oop' option:
+
+   <ORACLE_HOME>\OPatch\opatch apply <PATCH_HOME> -oop
+
+where PATCH_HOME is a numbered directory where you extracted interim patch contents.
+
+Note:
+-----
+When OPatch starts, it validates the patch and makes sure that there are no
+conflicts with the software already installed in the ORACLE_HOME.
+
+In case of opatch conflict, you will see a warning message similar to the one mentioned below:
+
+Interim Patch XXXX has Conflict with patch(es) [ YYYY ] in OH ...
+Conflict patches: YYYY
+Patch(es) YYYY conflict with the patch currently being installed (XXXX).
+If you continue, patch(es) YYYY will be rolled back and the new patch (XXXX) will be installed.
+
+If a merge of the new patch (XXXX) and the conflicting patch(es) ( YYYY) is required,contact Oracle Support Services and request a Merged patch.
+
+Do you want to proceed? [y|n]
+n
+
+You must stop the patch installation and the following should be reviewed:
+
+Doc ID 1329952.1 Oracle Fusion Middleware Patch Conflict Resolution
+https://support.oracle.com/rs?type=doc&id=1329952.1
+
+Contact Oracle Support if the conflict cannot be resolved or you need a Merge Request.
+
+5 Post-Installation Instructions
+---------------------------------
+
+Note:   The fix for bug 26929163 updates the runtime components for the 
+WLS plugin for the RCU and Upgrade Assistant tools.  It will prevent any 
+future WLS schema installs or upgrades from allowing WLS schema owners to 
+retain ANY privs once installation or upgrade have been completed.  The 
+patch will *not* affect schemas that have already been installed or 
+upgraded to the correct schema version.
+
+For existing installations that wish to remove the ANY privileges that 
+have been assigned to the WLS schema owners, users can run the script 
+located at $MW_HOME/oracle_common/common/sql/wlsservices/sql/cleanup.sql
+as the DBA user and provide the WLS schema owner names.  For example, if 
+the WLS schema owners are DEV1_WLS and DEV1_WLS_RUNTIME:
+
+      sqlplus <dba-connect-info> cleanup.sql  DEV1_WLS  DEV1_WLS_RUNTIME
+
+
+6 Deinstallation Instructions
+------------------------------
+
+If you experience any problems after installing this patch, remove the patch as
+follows:
+
+1. Make sure to follow the same Prerequisites or pre-install steps (if any)
+when deinstalling a patch.
+This includes setting up any environment variables like ORACLE_HOME and
+verifying the OUI inventory before deinstalling.
+
+2. Change to the directory where the patch was unzipped.
+
+$ cd PATCH_TOP/30675853
+
+3. Run OPatch to deinstall the patch.
+
+$ opatch rollback -id  30675853
+
+7 Post Deinstallation Instructions
+-----------------------------------
+Restart all servers (AdminServer and all Managed server(s)).
+
+This is necessary to redeploy the original applications and bring the
+environment back to it's original state.
+
+8 Bugs Fixed by This Patch
+--------------------------
+ 
+WLS Patch Set Update 12.2.1.3.191217
+ 30362086: CVE-2020-2551
+ 30362026: CVE-2020-2550
+ 30067299: CVE-2020-6950
+ 29769772: DEADLOCK ON WEBLOGIC.SERVLET.INTERNAL.ATTRIBUTEWRAPPER
+ 29671344: CVE-2020-2519
+ 30342923: CVE-2020-2519
+ 30341541: CVE-2020-2547
+ 26444945: CVE-2020-2544
+ 30576401: REGRESSION BUG FOR THIRD PARTY UPDATES IN PSU 12.2.1.3.191004
+ 27158972: FORMS LAUNCH FAILS WITH THE ERROR FRM-92101 AFTER APPLYING JULY'17 WEBLOGIC PSU
+ 30230430: WLS WON'T START AT ALL IF THE IP V6 /64 LISTED ON THE CONNECTION FILTER
+ 30568713: CVE-2019-17359
+ 29425867: PSR:PERF: WLS DOESN'T DETECT DEADLOCKS INVOLVING RE-RENTRANT LOCKS
+ 
+WLS Patch Set Update 12.2.1.3.191004
+ 27456095: C9QA:INT:JCS Prov fails during sm-provisioning-check-operation-rex : OTD VM
+ 29752735: MODIFY BODYCONTENTIMPL ON WRITE BUFFER
+ 30088758: JSCA CLUSTER RELATED TESTS FAILURE
+ 28794044: STRESS:WLS:NULLPOINTER EXCEPTION IN ASYNC WEBSERVICES TEST CASE
+ 29957539: CVE-2019-11358
+ 29585355: CVE-2019-2887
+ 27817138: ERROR WHILE TRYING TO DISABLE WADL GENERATION AND APPLICATION FAILED STATE
+ 26199271: XA RESOURCES SHOULD NOT CONTAIN THE SERVER NAME FOR MDBS.
+ 25830131: OWSM POLICY ATTACHEMENT IS NOT SAVED AFTER RESTART
+ 28879029: TRACKING BUG TO CREATE WLS OVERLAY OF BUG 27332409 FIX FOR BLRS
+ 26593955: NMAP SCANNING CAUSED WLS CRASH WHEN ENABLE SNMP WITH DEFAULT SETTING
+ 29913898: CVE-2019-2907
+ 29750025: CVE-2019-2890
+ 28973782: Fix for Bug 28973782
+ 29356775: CVE-2019-2891
+ 30180712: CVE-2019-17091
+ 24931180: Fix for Bug 24931180
+ 29643116: SESSION LEAK IN WEBLOGIC DURING LOGOUT
+ 27228370: SCHEMALOCATION IN GENERATED WSDL HAS // AFTER ?WSDL GENERATED WITH RELATIVE PATH
+ 29158881: CVE-2015-9251
+ 26877609: <MENTORING BUG> WEBLOGIC: INTERNAL RESPONSE TIMES INCREASES
+ 27179313: JTA SPAWNING ROLLBACK THREADS AFTER REMOTE SERVER IS DEAD OR DISCONNECTED
+ 29181056: NEW TRANSACTIONS STARTED AFTER GRACEFUL SHUTDOWN STARTED (PART II)
+ 30153412: CVE-2019-2888
+ 29921455: TRACKING BUG FOR WLS ISSUE IN 29726561
+ 28867938: STRESS:WLS:XA:TRANSACTION TIMING OUT DURING COMMIT IN XA TEST
+ 
+WLS Patch Set Update 12.2.1.3.190522
+ 25369207: JAVA.LANG.OUTOFMEMORY ERROR HAPPENS WHEN INITIALIZING AN APPLICATION
+ 29338121: Fix for Bug 29338121
+ 29448643: JAVA.IO.INVALIDCLASSEXCEPTION: FILTER STATUS: REJECTED
+ 29312272: WSDL ERROR MUST ATTRIBUTE 'NAME' NOTFOUND IN ELEMENT  'BINDING
+ 26987594: ALLOW SUPRESSING CROSS COMPONENT WIRING PROCESSING DURING PROVISIONING
+ 27010571: <BEA-000503> <INCOMING MESSAGE HEADER OR ABBREVIATION PROCESSING FAILED
+ 26075541: .APPMERGEGEN_$DIGIT DIR REMAIN EVERY TIME BY DEPLOYING A EAR ON WLS 12.2.1
+ 27823500: REGRESSION BUG WHICH INTRODUCED BY THE BUG FIXING OF 27678101
+ 27248932: TRACKING BUG FOR 26941603 FOR WLS
+ 25294832: WLS 12.2.1.2 DEPLOYMENT ERRORSMETHOD _JSPSERVICE EXCEEDS 65535 BYTES LIMIT
+ 26131085: IMPROVE CORRUPT STORE RECOVERY
+ 27659077: JSPS ARE GETTING RECOMPILED ON EVERY REQUEST
+ 26403575: CVE-2016-7103
+ 29667975: CVE-2019-2824
+ 28278427: VERSION ADDED TWICE WHEN SAVING A SECURITY POLICY
+ 29726561: CVE-2019-2729
+ 29701537: CVE-2019-2827
+ 29411629: CVE-2019-2856
+ 29789769: FIXED AN ISSUE WITH XMLDECODER
+ 
+WLS Patch Set Update 12.2.1.3.190416
+ 28748179: MAA - WLSSCHEMADATASOURCE SHOULD HAVE SECONDS-TO-TRUST-AN-IDLE-POOL-CONNECTION TO 0
+ 28984617: UNABLE TO SET PRE-EMPTIVE AUTHENTICATION FOR WSDL PARSING.
+ 28774974: FIXED NPE IN OUI WIZARD FOR DATABASE SCRIPTS PAGE
+ 28891448: CVE-2019-2618
+ 28874066: CVE-2019-2615
+ 26943614: USING REST API CLIENT APP DEPLOYMENT FAILS IN K8S WLS DOMAIN
+ 28651365: TRANSACTION SUB-COORDINATOR CREATES A NEW RJVM CONNECTION TO SEND ACK
+ 29140555: CVE-2019-2650
+ 27086845: BPEL THROWS ENDPOINT PARSING EXCEPTION WHILE CALLING WEB BASED ONE WAY OSB PROXY
+ 29140516: CVE-2019-2646
+ 28895280: CVE-2018-1258
+ 26791760: CVE-2019-2568
+ 29140540: CVE-2019-2647
+ 29140549: CVE-2019-2648
+ 29140508: CVE-2019-2645
+ 29140551: CVE-2019-2649
+ 28550962: PSR:PERF:WLS WLS IDCSINTEGRATOR NEEDS TO HANDLE 429 RESPONSES FROM IDCS
+ 27397287: ESS WSDL localizer ignoring HTTP non proxy host list
+ 28958819: FIXED AN ISSUE WHERE RECONFIGURE TEMPLATE CANNOT HANDLE DBCS DATA GUARD JDBC URL
+ 27033250: DEADLOCK AT WEBLOGIC.UTILS.CLASSLOADERS.CHANGEAWARECLASSLOADER.LOADCLASS
+ 
+WLS Patch Set Update 12.2.1.3.190115
+ 28149607: CVE-2015-1832
+ 28110087: CVE-2019-2418
+ 26267487: ADFBC SERVER   DETECT QUIESCE MODE API
+ 28632521: CVE-2018-1000180
+ 26624375: NODEMANAGER MEMORY LEAK ON SSL HANDSHAKE FAILURES
+ 27213775: NPE ON COM.ORACLE.INJECTION.INTEGRATION.MODULECONTAINERINTEGRATIONSERVICE
+ 28503638: CTS J2EETOOLS TEST FAILED WITH FIX FOR BUG 26268190
+ 28138954: 12.2.1.3.1 OHS  FAILED TO START OHS POST INSTALL DUE TO NEW REQ FOR MKTEMP PKG
+ 28103938: SECURITY ERROR CALLING EJB FROM WEBSTART APPLICATION USING THIN CLIENT
+ 28559579: CVE-2019-2441
+ 28594324: PERF PROD HUGE TIME SPENT IN WEBLOGIC.SECURITY.ACL.INTERNAL.AUTHENTICATEDSUBJECT
+ 26353793: CVE-2019-2398
+ 28626991: CVE-2019-2452
+ 28166483: TRACKING BUG TO CREATE WLS OVERLAY OF BUG 26001165 FIX FOR BLRS.
+ 28313163: HTTP SESSION OBJECTS DOESN'T ADHER SESSION TIMEOUT WHEN CLIENT TERMINATES REQUES
+ 28142116: FIXED AN ISSUE WHERE REFERENCES TO VERSIONED INVENTORY ARTIFACTS WAS BREAKING BI ZDT
+ 28319690: BASIC AUTH DOES NOT WORK WITH PASSWORDS CONTAINING BACKSLASH CHARACTER
+ 27912485: WLS IDCS CLOUD INTEGRATOR TO SUPPORT 429 RESPONSE CODES FROM OPC (THROTTLING)
+ 27561226: STRESS-OSB-STUCK THREADS DURING ALERT TESTING WHEN JMS QUEUE IS DOWN
+ 27927071: STRESS OIC ICS- NOSUCHELEMENTEXCEPTION DURING STRESS RUN
+ 
+WLS Patch Set Update 12.2.1.3.181016
+ 27469756: FIXED A MEMORY LEAK IN MBEANCICINTERCEPTOR THAT CAUSED ADMIN SERVER TO RUN OUT OF MEMORY.
+ 27486993: FIXED A FAILURE TO UNDEPLOY APPLICATIONS FROM A DYNAMIC CLUSTER.
+ 28140800: BYPASS VERSION STRING CHECKS WHEN NON-ORACLE JDK IS USED.
+ 27928833: FIXED A SERVER START ISSUE WHERE SERVER BOOT WILL HANG INDEFINITELY WHEN THE JDBC TLOG FEATURE IS CONFIGURED FOR THE SERVER AND AN EMPTY STRING VALUE IS SPECIFIED FOR THE DOMAINMBEAN SITENAME ATTRIBUTE.
+ 25580220: FIXED AN ISSUE THAT PREVENTED TARGETING MULTIDATASOURCE TO A PERSISTENT STORE.
+ 28311332: FIX TO REMOVE DUPLICATED CALL TO POLICYFEATUREUTILS.GETCLIENTEFFECTIVEPOLICYSET(CONTEXT)
+ 27988175: CVE-2018-3191
+ 28172380: FIX FOR 25800186 REVISED
+ 28360225: FIXED NPE WHEN JMS DISTRIBUTED DESTINATION DOES NOT HAVE AN ACTIVE MEMBER DURING AN INTERNAL SEARCH OPERATION.
+ 28171852: FIXED A CLASSNOTFOUNDEXCEPTION WHILE DEPLOYING GAR THAT REFERENCES A SHARED LIBRARY.
+ 28375173: CVE-2018-3245
+ 28071913: CVE-2018-3201
+ 28409586: CVE-2018-3252
+ 28375702: CVE-2018-3246
+ 
+WLS Patch Set Update 12.2.1.3.180717
+ 27411153: FIXED AUTHENTICATION FOR IDCS USERNAMES WITH MULTI-BYTE CHARACTERS
+ 26502060: FIXED JTA DETERMINERS ARRAY PROCESSING TO MAKE IT THREADSAFE
+ 27603087: FIXED AN ISSUE WITH AN RCU CLEANUP SCRIPT
+ 27234961: IMPROVE PERFORMANCE OF BEAN CREATION TO REDUCE STUCK THREADS WHEN DATABASE IS SLOW OR DOWN
+ 27187631: REDUCE IDCSINTEGRATOR DEFAULT VALUE FOR CONNECTION TIMEOUT TO 60S
+ 27516977: FIXED ACCESSCONTROLEXCEPTION THROWN WHILE NAVIGATING ADMIN CONSOLE WHILE JAVA SECURITY MANAGER IS ENABLED.
+ 27819370: CVE-2018-2987
+ 27617877: FIXED FAILURE IN RECOVERY OF ALL CONFIGURED DETERMINERS CAUSED BY CONCURRENT ACCESS OF NOTLOG RESOURCE STATE
+ 26145911: ADDED DETECTION FOR LONG RUNNING WORK REQUESTS AND EXCLUDE THEM IN THREAD COUNT DECISION IN ENHANCED INCREMENT ADVISOR.
+ 26268190: FIXED AN ISSUE WHERE VARIOUS MANAGEMENT RMI CALLS ARE DISPATCHED USING DEFAULT WORK MANAGER INSTEAD OF WEBLOGIC.ADMIN.RMI WORK MANAGER.
+ 27693510: FIXED DEFAULT VALUE FOR JAX-RS-MONITORING-DEFAULT-BEHAVIOR IN WEBAPP CONTAINER
+ 27417245: CVE-2018-2894
+ 27284496: FIXED EXTREMELY SLOW WEBLOGIC START WHEN THERE ARE LARGE NUMBER OF OSB PROJECTS
+ 27947832: FIXED AN ISSUE WHERE JAVAX.XML.XMLCONSTANTS.FEATURE_SECURE_PROCESSING WASN'T BEING PROPERLY PROPAGATED IN WSDLREADER.
+ 26026959: FIXED ERROR 404 WHILE LOADING DEPLOYED SOA COMPOSITES AFTER SCALE UP OF A DYNAMIC CLUSTER
+ 26499391: FIXED FAILURE TO SCALE DOWN BPM AFTER IT IS REGISTERED WITH OTD
+ 23076695: ENSURE USE OF FACTORY METHODS WHEN INSTANTIATING XMLINPUTFACTORY
+ 25488428: FIXED ADDITION OF WSS USERNAME TOKEN SECURITY HEADER TO JAXWS DISPATCH CLIENT WITH CUSTOM POLICY ID
+ 26626528: FIXED FAILURE TO START COMPONENTS SIMULTANEOUSLY ON THE SAME HOST
+ 27445260: CVE-2018-2935
+ 26098043: PROVIDE APP ROLES INFORMATION IN IDCS CLIENT FOR END-TO-END AUTHENTICATION FLOW
+ 27948303: CVE-2018-2893
+ 27934864: CVE-2018-2998
+ 27803728: CVE-2018-7489
+ 
+WLS Patch Set Update 12.2.1.3.180417
+ 26473149: FIX NULLPOINTEREXCEPTION THAT OCCURRED IF A WEBAPP IS DEPLOYED FROM A WINDOWS SHARED FOLDER
+ 27272911: FIXED AN ISSUE WITH JAVAURLCONTEXTFACTORY
+ 26731253: FIX NOSUCHMETHODEXCEPTION THAT MAY OCCUR FOR IDENTITYASSERTER WHEN DEBUGSECURITYATN IS ENABLED
+ 27118731: FIX TYPO IN DEBUG MESSAGE WHEN DEBUGSECURITYATN IS ENABLED
+ 27131483: FIX METHOD NAME IN DEBUG MESSAGE WHEN DEBUGSECURITYATN IS ENABLED
+ 25993295: CVE-2013-1768
+ 25800186: FIXED AN ISSUE WHERE A REDIRECT FROM WLS DID NOT ADD CONTENT-LENGTH OR CHUNKED-TRANSFER IN THE RESPONSE
+ 25987400: FIXED AN ISSUE WHERE IT WASN'T POSSIBLE TO PROVIDE INDIRECT TRANSACTION PROPAGATION BETWEEN SERVERS THAT ARE ON DIFFERENT NETWORKS
+ 26439373: CVE-2017-5645
+ 26080417: FIXED AN ISSUE WHERE AN HTTP RESPONSE 204 WAS INCORRECTLY INCLUDING A RESPONSE BODY OF 0000
+ 26929163: FIXED AN ISSUE WITH WLS SCHEMA OWNER PERMISSIONS
+ 26806438: FIXED A NULLPOINTEREXCEPTION CONDITION THAT MAY OCCUR WHEN TRYING TO ACTIVATE AN APPLICATION
+ 25665727: FIXED AN ISSUE WHERE THE ADMIN SERVER WAS CONSUMING AN INORDINATE AMOUNT OF NATIVE MEMORY
+ 26608537: CVE-2018-2628
+ 
+WLS Patch Set Update 12.2.1.3.180116
+ 26936500: FIXED AN ISSUE IN THE WEBLOGICDEPLOYMENTMANAGER THAT CAUSED THE LIBRARY DEPLOYMENTS TO NOT BE RETURNED
+ 27055227: PROVIDED ADDITIONAL DIAGNOSTIC INFORMATION FOR IDCS INTEGRATION
+ 26144830: CVE-2017-10352
+ 25750303: FIXED AN ISSUE WHERE FLUCTUATION IN THE NETWORK CONNECTION BETWEEN THE ADMIN AND MANAGED SERVER COULD CAUSE A PERMANENT DISCONNECT BETWEEN THE TWO
+ 26248394: Fix for Bug 26248394
+ 26589850: FIXED AN ISSUE WHEREIN DOMAINRUNTIME.GETSERVERRUNTIME()WOULD TIME OUT ON A SLOW NETWORK
+ 27111664: FIXED AN ISSUE WITH THE WSDLREADER
+ 26547016: CVE-2018-2625
+ 26828499: FIXED AN ISSUE WHERE THE HOST HEADER WAS BEING INCORRECTLY OVERRITTEN WHEN CLUSTER FRONTEND ADDRESS IS SET
+ 26835012: FIXED A DEADLOCK CONDITION WITH MBEANSERVERCONNECTIONMANAGER
+ 27117282: FIXED AN ISSUE WHERE CERTGEN WAS FAILING WITH JDK8 CPU (180161, B04, B05, B06)
+ 26985581: FIXED AN ISSUE WHERE A JAVA.LANG.STRINGINDEXOUTOFBOUNDSEXCEPTION CAN OCCUR
+ 23103220: CVE-2016-5535
+
+
+9 Known Issues
+------------
+For information about OPatch issues, see the following:
+
+Doc ID 1587524.1 Using OUI NextGen OPatch 13 for Oracle Fusion Middleware 12c (12.1.2+)
+https://support.oracle.com/rs?type=doc&id=1587524.1
+
+For issues documented after the release of this WLS Patch Set Update, see the following:
+
+Doc ID 2350415.1 Known Issues for Oracle WebLogic Server (OWLS) 12.2.1.3.X Patch Set Updates
+https://support.oracle.com/rs?type=doc&id=2350415.1
+
+If you are running with a security manager and experience
+java.io.SerializablePermission "serialFilter" permission exceptions, then you
+will need to update the weblogic policy file to include the following line:
+
+    permission java.io.SerializablePermission "serialFilter";
+
+in the coherence.jar section of the weblogic policy file:
+
+   grant codeBase "file:@WL_HOME/../coherence/lib/coherence.jar" {
+
+
+
+-----------------------------------------------------------------------------
+DISCLAIMER:
+
+
+Oracle recommends this Patch Set Update (PSU) for development and production
+systems in accordance with Doc ID 1306505.1.
+
+This PSU may conflict with an interim patch(es) that has been applied to
+customer systems. If a patch conflict is identified, customers should
+determine, through review of the bugs fixed list, whether the interim patch
+was included in the PSU.   If the interim patch is included in the PSU, the
+interim patch does not need to be applied to systems where the PSU is
+applied.    If the interim patch is not included in the PSU, the conflict
+probably arises because the PSU modifies the same module as the interim
+patch.   In such cases, customers should contact Oracle Support, provide
+information about all patches applied to the system, and request an overlay
+patch(es) that will resolve the conflict.
+
+Copyright (c)  2019, Oracle and/or its affiliates. All rights reserved.
+----------------------------------------------------------------------------- 
